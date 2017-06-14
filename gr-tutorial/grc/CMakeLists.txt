@@ -18,5 +18,6 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    tutorial_multiply_py_ff.xml DESTINATION share/gnuradio/grc/blocks
+    tutorial_multiply_py_ff.xml
+    tutorial_qpsk_demod_py_cb.xml DESTINATION share/gnuradio/grc/blocks
 )
