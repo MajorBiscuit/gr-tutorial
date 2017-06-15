@@ -26,6 +26,7 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND tutorial_sources
+    qpsk_demod_cpp_cb_impl.cc
 )
 
 set(tutorial_sources "${tutorial_sources}" PARENT_SCOPE)
@@ -63,6 +64,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_tutorial_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_tutorial.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_tutorial.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_qpsk_demod_cpp_cb.cc
 )
 
 add_executable(test-tutorial ${test_tutorial_sources})

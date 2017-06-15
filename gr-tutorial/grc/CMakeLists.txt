@@ -19,5 +19,6 @@
 
 install(FILES
     tutorial_multiply_py_ff.xml
-    tutorial_qpsk_demod_py_cb.xml DESTINATION share/gnuradio/grc/blocks
+    tutorial_qpsk_demod_py_cb.xml
+    tutorial_qpsk_demod_cpp_cb.xml DESTINATION share/gnuradio/grc/blocks
 )
