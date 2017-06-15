@@ -12,7 +12,7 @@
        * type -->
   <param>
     <name>Gray Code</name>
-    <key>grey_code</key>
+    <key>gray_code</key>
     <type>bool</type>
     <option>
       <name>Yes</name>

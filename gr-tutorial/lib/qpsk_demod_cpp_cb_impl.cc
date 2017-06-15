@@ -108,26 +108,28 @@ namespace gr {
       if (d_gray_code) {
 	unsigned char bit0 = 0;
 	unsigned char bit1 = 0;
-	if (sample.real() < 0) {
+	// The two lower quadrants have the 1st bit set to 1
+	if (sample.imag() < 0) {
 	  bit0 = 0x01;
 	}
-	if (sample.imag() < 0) {
+	// The two left quadrants have the 2nd bit set to 1
+	if (sample.real() < 0) {
 	  bit1 = 0x01 << 1;
 	}
 	return bit0 bitor bit1;
       }
       else {
 	// Non-gray code
-	if (sample.real() >= 0 and sample.imag() >= 0) {
+	if (sample.real() >= 0 and sample.imag() >= 0) { // 1+1j
 	  return 0x00;
 	}
-	else if (sample.real() < 0 and sample.imag() >= 0) {
+	else if (sample.real() < 0 and sample.imag() >= 0) { // -1+1j
 	  return 0x03;
 	}
-	else if (sample.real() < 0 and sample.imag() < 0) {
+	else if (sample.real() < 0 and sample.imag() < 0) { // -1-1j
 	  return 0x02;
 	}
-	else if (sample.real() >= 0 and sample.imag() < 0) {
+	else if (sample.real() >= 0 and sample.imag() < 0) { // 1-1j
 	  return 0x01;
 	} 
       }

@@ -1,3 +1,6 @@
 gr-tutorial/build/
 *.pyc
 *.py~
+*.cc~
+*.h~
+*.xml~
