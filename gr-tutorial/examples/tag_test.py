@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Qpsk Demod Cpp
-# Generated: Fri Jun 16 16:06:08 2017
+# Title: Tag Test
+# Generated: Fri Jun 16 16:02:54 2017
 ##################################################
 
 if __name__ == '__main__':
@@ -19,26 +19,23 @@ if __name__ == '__main__':
 from PyQt4 import Qt
 from gnuradio import analog
 from gnuradio import blocks
-from gnuradio import digital
 from gnuradio import eng_notation
 from gnuradio import gr
 from gnuradio import qtgui
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from gnuradio.qtgui import Range, RangeWidget
 from optparse import OptionParser
-import numpy
+import pmt
 import sip
 import sys
-import tutorial
 
 
-class QPSK_demod_cpp(gr.top_block, Qt.QWidget):
+class tag_test(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Qpsk Demod Cpp")
+        gr.top_block.__init__(self, "Tag Test")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Qpsk Demod Cpp")
+        self.setWindowTitle("Tag Test")
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
         except:
@@ -55,30 +52,25 @@ class QPSK_demod_cpp(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "QPSK_demod_cpp")
+        self.settings = Qt.QSettings("GNU Radio", "tag_test")
         self.restoreGeometry(self.settings.value("geometry").toByteArray())
 
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 32e3
-        self.noise_amplitude = noise_amplitude = .01
+        self.samp_rate = samp_rate = 32000
 
         ##################################################
         # Blocks
         ##################################################
-        self._noise_amplitude_range = Range(0, 1, .001, .01, 200)
-        self._noise_amplitude_win = RangeWidget(self._noise_amplitude_range, self.set_noise_amplitude, "noise_amplitude", "counter_slider", float)
-        self.top_layout.addWidget(self._noise_amplitude_win)
-        self.tutorial_qpsk_demod_cpp_cb_0 = tutorial.qpsk_demod_cpp_cb(True)
-        self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
+        self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
         	1024, #size
         	samp_rate, #samp_rate
         	"", #name
         	1 #number of inputs
         )
         self.qtgui_time_sink_x_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0.set_y_axis(-.5, 3.5)
+        self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
         
         self.qtgui_time_sink_x_0.set_y_label("Amplitude", "")
         
@@ -97,16 +89,19 @@ class QPSK_demod_cpp(gr.top_block, Qt.QWidget):
                   1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
                   "magenta", "yellow", "dark red", "dark green", "blue"]
-        styles = [3, 1, 1, 1, 1,
+        styles = [1, 1, 1, 1, 1,
                   1, 1, 1, 1, 1]
-        markers = [0, -1, -1, -1, -1,
+        markers = [-1, -1, -1, -1, -1,
                    -1, -1, -1, -1, -1]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
         
-        for i in xrange(1):
+        for i in xrange(2*1):
             if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0.set_line_label(i, "Data {0}".format(i))
+                if(i % 2 == 0):
+                    self.qtgui_time_sink_x_0.set_line_label(i, "Re{{Data {0}}}".format(i/2))
+                else:
+                    self.qtgui_time_sink_x_0.set_line_label(i, "Im{{Data {0}}}".format(i/2))
             else:
                 self.qtgui_time_sink_x_0.set_line_label(i, labels[i])
             self.qtgui_time_sink_x_0.set_line_width(i, widths[i])
@@ -117,67 +112,21 @@ class QPSK_demod_cpp(gr.top_block, Qt.QWidget):
         
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
-        	1024, #size
-        	"", #name
-        	1 #number of inputs
-        )
-        self.qtgui_const_sink_x_0.set_update_time(0.10)
-        self.qtgui_const_sink_x_0.set_y_axis(-2, 2)
-        self.qtgui_const_sink_x_0.set_x_axis(-2, 2)
-        self.qtgui_const_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, "")
-        self.qtgui_const_sink_x_0.enable_autoscale(False)
-        self.qtgui_const_sink_x_0.enable_grid(False)
-        
-        if not True:
-          self.qtgui_const_sink_x_0.disable_legend()
-        
-        labels = ["", "", "", "", "",
-                  "", "", "", "", ""]
-        widths = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        colors = ["blue", "red", "red", "red", "red",
-                  "red", "red", "red", "red", "red"]
-        styles = [0, 0, 0, 0, 0,
-                  0, 0, 0, 0, 0]
-        markers = [0, 0, 0, 0, 0,
-                   0, 0, 0, 0, 0]
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(1):
-            if len(labels[i]) == 0:
-                self.qtgui_const_sink_x_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_const_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_const_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_const_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_const_sink_x_0.set_line_style(i, styles[i])
-            self.qtgui_const_sink_x_0.set_line_marker(i, markers[i])
-            self.qtgui_const_sink_x_0.set_line_alpha(i, alphas[i])
-        
-        self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
-        self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_bc(([1+1j, 1-1j, -1+1j, -1-1j]), 1)
-        self.blocks_uchar_to_float_0 = blocks.uchar_to_float()
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
+        self.blocks_tags_strobe_0 = blocks.tags_strobe(gr.sizeof_gr_complex*1, pmt.intern("TEST"), 1000, pmt.intern("strobe"))
         self.blocks_add_xx_0 = blocks.add_vcc(1)
-        self.analog_random_source_x_0 = blocks.vector_source_b(map(int, numpy.random.randint(0, 4, 10000)), True)
-        self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, noise_amplitude, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, 1000, 1, 0)
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_noise_source_x_0, 0), (self.blocks_add_xx_0, 1))    
-        self.connect((self.analog_random_source_x_0, 0), (self.digital_chunks_to_symbols_xx_0, 0))    
+        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_add_xx_0, 0))    
         self.connect((self.blocks_add_xx_0, 0), (self.blocks_throttle_0, 0))    
-        self.connect((self.blocks_add_xx_0, 0), (self.tutorial_qpsk_demod_cpp_cb_0, 0))    
-        self.connect((self.blocks_throttle_0, 0), (self.qtgui_const_sink_x_0, 0))    
-        self.connect((self.blocks_uchar_to_float_0, 0), (self.qtgui_time_sink_x_0, 0))    
-        self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.blocks_add_xx_0, 0))    
-        self.connect((self.tutorial_qpsk_demod_cpp_cb_0, 0), (self.blocks_uchar_to_float_0, 0))    
+        self.connect((self.blocks_tags_strobe_0, 0), (self.blocks_add_xx_0, 1))    
+        self.connect((self.blocks_throttle_0, 0), (self.qtgui_time_sink_x_0, 0))    
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "QPSK_demod_cpp")
+        self.settings = Qt.QSettings("GNU Radio", "tag_test")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -187,18 +136,12 @@ class QPSK_demod_cpp(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
 
-    def get_noise_amplitude(self):
-        return self.noise_amplitude
 
-    def set_noise_amplitude(self, noise_amplitude):
-        self.noise_amplitude = noise_amplitude
-        self.analog_noise_source_x_0.set_amplitude(self.noise_amplitude)
-
-
-def main(top_block_cls=QPSK_demod_cpp, options=None):
+def main(top_block_cls=tag_test, options=None):
 
     from distutils.version import StrictVersion
     if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):

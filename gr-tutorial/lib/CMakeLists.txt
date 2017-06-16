@@ -24,10 +24,9 @@ include(GrPlatform) #define LIB_SUFFIX
 
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
-
 list(APPEND tutorial_sources
     qpsk_demod_cpp_cb_impl.cc
-)
+    qpsk_demod_tags_cpp_cb_impl.cc )
 
 set(tutorial_sources "${tutorial_sources}" PARENT_SCOPE)
 if(NOT tutorial_sources)

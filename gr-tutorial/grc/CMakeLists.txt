@@ -16,9 +16,9 @@
 # along with GNU Radio; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
-
 install(FILES
     tutorial_multiply_py_ff.xml
     tutorial_qpsk_demod_py_cb.xml
-    tutorial_qpsk_demod_cpp_cb.xml DESTINATION share/gnuradio/grc/blocks
+    tutorial_qpsk_demod_cpp_cb.xml
+    tutorial_qpsk_demod_tags_cpp_cb.xml DESTINATION share/gnuradio/grc/blocks
 )

@@ -22,5 +22,6 @@
 ########################################################################
 install(FILES
     api.h
-    qpsk_demod_cpp_cb.h DESTINATION include/tutorial
+    qpsk_demod_cpp_cb.h
+    qpsk_demod_tags_cpp_cb.h DESTINATION include/tutorial
 )
