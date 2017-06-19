@@ -3,9 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Author: Martin Braun
-# Description: Shows a demo block using tags.
-# Generated: Mon Jun 19 11:50:09 2017
+# Generated: Mon Jun 19 16:45:43 2017
 ##################################################
 
 if __name__ == '__main__':
@@ -19,16 +17,17 @@ if __name__ == '__main__':
             print "Warning: failed to XInitThreads()"
 
 from PyQt4 import Qt
-from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import gr
 from gnuradio import qtgui
+from gnuradio import uhd
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
+from gnuradio.qtgui import Range, RangeWidget
 from optparse import OptionParser
 import sip
 import sys
-import tutorial
+import time
 
 
 class top_block(gr.top_block, Qt.QWidget):
@@ -59,71 +58,55 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 32000
+        self.samp_rate = samp_rate = 32e6
+        self.gain = gain = 0
+        self.freq = freq = 1e9
 
         ##################################################
         # Blocks
         ##################################################
-        self.tutorial_qpsk_demod_tags_cpp_cb_0 = tutorial.qpsk_demod_tags_cpp_cb(True)
-        self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
-        	1024, #size
-        	samp_rate, #samp_rate
-        	"QT GUI Plot", #name
-        	1 #number of inputs
+        self._gain_range = Range(0, 74, 1, 0, 200)
+        self._gain_win = RangeWidget(self._gain_range, self.set_gain, "gain", "counter_slider", float)
+        self.top_layout.addWidget(self._gain_win)
+        self._freq_range = Range(70e6, 6e9, 1000, 1e9, 200)
+        self._freq_win = RangeWidget(self._freq_range, self.set_freq, "freq", "counter_slider", float)
+        self.top_layout.addWidget(self._freq_win)
+        self.uhd_usrp_source_0 = uhd.usrp_source(
+        	",".join(("addr=192.168.10.2", "")),
+        	uhd.stream_args(
+        		cpu_format="fc32",
+        		channels=range(1),
+        	),
         )
-        self.qtgui_time_sink_x_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0.set_y_axis(0, 3.5)
+        self.uhd_usrp_source_0.set_samp_rate(samp_rate)
+        self.uhd_usrp_source_0.set_center_freq(freq, 0)
+        self.uhd_usrp_source_0.set_gain(gain, 0)
+        self.uhd_usrp_source_0.set_antenna("RX2", 0)
+        self.uhd_usrp_source_0.set_bandwidth(samp_rate, 0)
+        self.qtgui_sink_x_0 = qtgui.sink_c(
+        	1024, #fftsize
+        	firdes.WIN_BLACKMAN_hARRIS, #wintype
+        	0, #fc
+        	samp_rate, #bw
+        	"QT GUI Plot", #name
+        	True, #plotfreq
+        	True, #plotwaterfall
+        	True, #plottime
+        	True, #plotconst
+        )
+        self.qtgui_sink_x_0.set_update_time(1.0/10)
+        self._qtgui_sink_x_0_win = sip.wrapinstance(self.qtgui_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_sink_x_0_win)
         
-        self.qtgui_time_sink_x_0.set_y_label("Amplitude", "")
+        self.qtgui_sink_x_0.enable_rf_freq(False)
         
-        self.qtgui_time_sink_x_0.enable_tags(-1, True)
-        self.qtgui_time_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0.enable_autoscale(True)
-        self.qtgui_time_sink_x_0.enable_grid(False)
-        self.qtgui_time_sink_x_0.enable_control_panel(False)
         
-        if not True:
-          self.qtgui_time_sink_x_0.disable_legend()
-        
-        labels = ["", "", "", "", "",
-                  "", "", "", "", ""]
-        widths = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        colors = ["blue", "red", "green", "black", "cyan",
-                  "magenta", "yellow", "dark red", "dark green", "blue"]
-        styles = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        markers = [-1, -1, -1, -1, -1,
-                   -1, -1, -1, -1, -1]
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-        
-        for i in xrange(1):
-            if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_time_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
-        
-        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.blocks_vector_source_x_0 = blocks.vector_source_c((-1+1j, -1-1j, 0), True, 1, [])
-        self.blocks_uchar_to_float_0 = blocks.uchar_to_float()
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
-        self.blocks_repeat_0 = blocks.repeat(gr.sizeof_gr_complex*1, 10)
+          
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_repeat_0, 0), (self.blocks_throttle_0, 0))    
-        self.connect((self.blocks_throttle_0, 0), (self.tutorial_qpsk_demod_tags_cpp_cb_0, 0))    
-        self.connect((self.blocks_uchar_to_float_0, 0), (self.qtgui_time_sink_x_0, 0))    
-        self.connect((self.blocks_vector_source_x_0, 0), (self.blocks_repeat_0, 0))    
-        self.connect((self.tutorial_qpsk_demod_tags_cpp_cb_0, 0), (self.blocks_uchar_to_float_0, 0))    
+        self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_sink_x_0, 0))    
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "top_block")
@@ -136,8 +119,24 @@ class top_block(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
-        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
+        self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
+        self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
+        self.uhd_usrp_source_0.set_bandwidth(self.samp_rate, 0)
+
+    def get_gain(self):
+        return self.gain
+
+    def set_gain(self, gain):
+        self.gain = gain
+        self.uhd_usrp_source_0.set_gain(self.gain, 0)
+        	
+
+    def get_freq(self):
+        return self.freq
+
+    def set_freq(self, freq):
+        self.freq = freq
+        self.uhd_usrp_source_0.set_center_freq(self.freq, 0)
 
 
 def main(top_block_cls=top_block, options=None):
