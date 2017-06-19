@@ -46,7 +46,7 @@ namespace gr {
        * class. tutorial::qpsk_demod_tags_cpp_cb::make is the public interface for
        * creating new instances.
        */
-      static sptr make(gray_code);
+      static sptr make(bool gray_code);
     };
 
   } // namespace tutorial

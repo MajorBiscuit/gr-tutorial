@@ -29,7 +29,7 @@ namespace gr {
   namespace tutorial {
 
     qpsk_demod_tags_cpp_cb::sptr
-    qpsk_demod_tags_cpp_cb::make(gray_code)
+    qpsk_demod_tags_cpp_cb::make(bool gray_code)
     {
       return gnuradio::get_initial_sptr
         (new qpsk_demod_tags_cpp_cb_impl(gray_code));
@@ -38,12 +38,13 @@ namespace gr {
     /*
      * The private constructor
      */
-    qpsk_demod_tags_cpp_cb_impl::qpsk_demod_tags_cpp_cb_impl(gray_code)
+    qpsk_demod_tags_cpp_cb_impl::qpsk_demod_tags_cpp_cb_impl(bool gray_code)
       : gr::sync_block("qpsk_demod_tags_cpp_cb",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
 	      gr::io_signature::make(1, 1, sizeof(char))),
 	// initialise d_gray_code to gray_code
-	d_gray_code(gray_code)
+	d_gray_code(gray_code),
+	d_low_ampl_state(false) 
     {}
 
     /*
@@ -67,13 +68,29 @@ namespace gr {
       for(int i = 0; i < noutput_items; i++)
 	{
 	  out[i] = get_minimum_distances(in[i]);
+	  if (std::abs(in[i]) < 0.01 and not d_low_ampl_state) {
+	    add_item_tag(0, //Port number
+			 nitems_written(0) + i, // Offset
+			 pmt::mp("amplitude_warning"), // Key
+			 pmt::from_double(std::abs(in[i])) // Value
+			 );
+	    d_low_ampl_state = true;
+	  }
+	  else if (std::abs(in[i]) >= 0.01 and d_low_ampl_state) {
+	    add_item_tag(0, // Port number
+			 nitems_written(0) + i, //Offset
+			 pmt::mp("amplitude_recovered"), //Key
+			 pmt::PMT_T // Value
+			 );
+	    d_low_ampl_state = false; // Reset state
+	  }
 	}
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
     unsigned char
-    qpsk_demod_cpp_cb_impl::get_minimum_distances(const gr_complex &sample)
+    qpsk_demod_tags_cpp_cb_impl::get_minimum_distances(const gr_complex &sample)
     {
       /*
 	Mapping with gray code:

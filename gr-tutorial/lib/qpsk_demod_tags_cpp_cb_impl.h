@@ -29,7 +29,10 @@ namespace gr {
     class qpsk_demod_tags_cpp_cb_impl : public qpsk_demod_tags_cpp_cb
     {
      private:
+      // If true, a gray code is used
       bool d_gray_code;
+      // Detects if we are in a state with low amplitude
+      bool d_low_ampl_state;
 
      public:
       qpsk_demod_tags_cpp_cb_impl(bool gray_code);
