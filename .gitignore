@@ -4,3 +4,4 @@ gr-tutorial/build/
 *.cc~
 *.h~
 *.xml~
+*.ogg
